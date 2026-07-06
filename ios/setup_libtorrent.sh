@@ -17,7 +17,7 @@ fi
 if [ ! -f "$THIRDPARTY_DIR/include/libtorrent/version.hpp" ]; then
     echo "Cloning C++ libtorrent source..."
     rm -rf "$THIRDPARTY_DIR"
-    git clone --depth 1 --branch v2.0.10 \
+    git clone --depth 1 --branch v2.0.10 --recurse-submodules \
         https://github.com/arvidn/libtorrent.git \
         "$THIRDPARTY_DIR"
 fi

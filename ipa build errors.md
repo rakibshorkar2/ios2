@@ -10,3 +10,9 @@
 ~~setup_libtorrent.sh runs but CMake fails: Could NOT find Boost (missing: Boost_INCLUDE_DIR)~~
 
 **FIXED:** Added `brew install boost` to CI workflow before `setup_libtorrent.sh`.
+
+---
+
+~~CMake Error: Cannot find source file: deps/try_signal/try_signal.cpp~~
+
+**FIXED:** Added `--recurse-submodules` to `git clone` in `setup_libtorrent.sh` to fetch the `deps/try_signal` git submodule.
