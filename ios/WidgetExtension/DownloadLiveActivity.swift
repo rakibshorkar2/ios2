@@ -10,63 +10,105 @@ struct DownloadLiveActivity: Widget {
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    HStack(spacing: 6) {
-                        Image(systemName: iconName(for: context.state.status, isCompleted: context.state.isCompleted))
-                            .foregroundColor(iconColor(for: context.state.status, isCompleted: context.state.isCompleted))
-                            .font(.title3)
-                        VStack(alignment: .leading, spacing: 1) {
-                            Text(context.state.fileName)
-                                .font(.caption)
-                                .fontWeight(.medium)
-                                .lineLimit(1)
-                                .foregroundColor(.white)
-                            Text(context.state.status)
-                                .font(.caption2)
-                                .foregroundColor(statusColor(context.state.status, isCompleted: context.state.isCompleted))
-                        }
-                    }
-                    .padding(.leading, 4)
+                    Image(
+                        systemName: iconName(
+                            for: context.state.status,
+                            isCompleted: context.state.isCompleted
+                        )
+                    )
+                    .foregroundColor(
+                        iconColor(
+                            for: context.state.status,
+                            isCompleted: context.state.isCompleted
+                        )
+                    )
+                    .font(.title2)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    VStack(alignment: .trailing, spacing: 1) {
-                        Text(context.state.isCompleted ? "Done" : "\(Int(context.state.progress * 100))%")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                        Text("\(context.state.downloadedSize) / \(context.state.totalSize)")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                    }
+                    Text(
+                        context.state.isCompleted
+                            ? "Done"
+                            : "\(Int(context.state.progress * 100))%"
+                    )
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                }
+                DynamicIslandExpandedRegion(.center) {
+                    Text(context.state.fileName)
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .lineLimit(1)
+                        .foregroundColor(.white)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    VStack(spacing: 4) {
-                        ProgressView(value: context.state.isCompleted ? 1.0 : context.state.progress)
-                            .tint(context.state.isCompleted ? .green : .blue)
+                    VStack(spacing: 6) {
+                        ProgressView(
+                            value: context.state.isCompleted
+                                ? 1.0 : context.state.progress
+                        )
+                        .tint(context.state.isCompleted ? .green : .blue)
+
                         HStack {
-                            Label(context.state.speed, systemImage: "arrow.down.circle")
-                                .font(.caption2)
-                                .foregroundColor(.green)
+                            HStack(spacing: 4) {
+                                Image(systemName: "arrow.down.circle")
+                                    .font(.caption2)
+                                Text(context.state.speed)
+                                    .font(.caption2)
+                            }
+                            .foregroundColor(.green)
+
                             Spacer()
-                            Label(context.state.eta, systemImage: "clock")
+
+                            Text(context.state.status)
                                 .font(.caption2)
                                 .foregroundColor(.secondary)
+
+                            Spacer()
+
+                            HStack(spacing: 4) {
+                                Image(systemName: "clock")
+                                    .font(.caption2)
+                                Text(context.state.eta)
+                                    .font(.caption2)
+                            }
+                            .foregroundColor(.secondary)
                         }
+
+                        Text(
+                            "\(context.state.downloadedSize) / \(context.state.totalSize)"
+                        )
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
                     }
-                    .padding(.horizontal, 8)
-                    .padding(.bottom, 4)
                 }
             } compactLeading: {
-                Image(systemName: context.state.isCompleted ? "checkmark.circle.fill" : "arrow.down.circle")
-                    .foregroundColor(context.state.isCompleted ? .green : .blue)
+                Image(
+                    systemName: context.state.isCompleted
+                        ? "checkmark.circle.fill"
+                        : "arrow.down.circle"
+                )
+                .foregroundColor(
+                    context.state.isCompleted ? .green : .blue
+                )
             } compactTrailing: {
-                Text(context.state.isCompleted ? "Done" : "\(Int(context.state.progress * 100))%")
-                    .font(.caption)
-                    .fontWeight(.medium)
-                    .foregroundColor(.white)
+                Text(
+                    context.state.isCompleted
+                        ? "Done"
+                        : "\(Int(context.state.progress * 100))%"
+                )
+                .font(.caption)
+                .fontWeight(.medium)
+                .foregroundColor(.white)
             } minimal: {
-                Image(systemName: context.state.isCompleted ? "checkmark.circle.fill" : "arrow.down.circle")
-                    .foregroundColor(context.state.isCompleted ? .green : .blue)
+                Image(
+                    systemName: context.state.isCompleted
+                        ? "checkmark.circle.fill"
+                        : "arrow.down.circle"
+                )
+                .foregroundColor(
+                    context.state.isCompleted ? .green : .blue
+                )
             }
         }
     }
@@ -90,17 +132,6 @@ struct DownloadLiveActivity: Widget {
         case "error", "failed": return .red
         case "queued": return .gray
         default: return .blue
-        }
-    }
-
-    private func statusColor(_ status: String, isCompleted: Bool) -> Color {
-        if isCompleted { return .green }
-        switch status.lowercased() {
-        case "downloading": return .blue
-        case "paused": return .orange
-        case "error", "failed": return .red
-        case "queued": return .gray
-        default: return .secondary
         }
     }
 }
@@ -140,11 +171,13 @@ private struct LockScreenView: View {
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 2) {
-                Text(context.state.isCompleted
-                    ? "Done"
-                    : "\(Int(context.state.progress * 100))%")
-                    .font(.title2)
-                    .fontWeight(.bold)
+                Text(
+                    context.state.isCompleted
+                        ? "Done"
+                        : "\(Int(context.state.progress * 100))%"
+                )
+                .font(.title2)
+                .fontWeight(.bold)
                 Text("\(context.state.downloadedSize) / \(context.state.totalSize)")
                     .font(.caption2)
                     .foregroundColor(.secondary)
