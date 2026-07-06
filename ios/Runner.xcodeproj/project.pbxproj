@@ -258,6 +258,9 @@
 				FF000017 /* PBXTargetDependency */,
 			);
 			name = Runner;
+			packageProductDependencies = (
+				FF000030 /* LibTorrent */,
+			);
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
@@ -301,6 +304,9 @@
 				97C146ED1CF9000F007C117D /* Runner */,
 				331C8080294A63A400263BE5 /* RunnerTests */,
 				FF000011 /* WidgetExtension */,
+			);
+			packageReferences = (
+				FF00002F /* XCRemoteSwiftPackageReference "LibTorrent-Swift" */,
 			);
 		};
 /* End PBXProject section */
@@ -388,6 +394,11 @@
 				FF00001F /* DownloadPlugin.swift in Sources */,
 			FF000022 /* BackgroundAudioService.swift in Sources */,
 			FF000023 /* BackgroundLocationService.swift in Sources */,
+			FF00002A /* TorrentPlugin.swift in Sources */,
+			FF00002B /* TorrentManager.swift in Sources */,
+			FF00002C /* TorrentSession.swift in Sources */,
+			FF00002D /* TorrentEvents.swift in Sources */,
+			FF00002E /* TorrentStorage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -804,6 +815,24 @@
 		};
 /* End XCBuildConfiguration section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		FF00002F /* XCRemoteSwiftPackageReference "LibTorrent-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/XITRIX/LibTorrent-Swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FF000030 /* LibTorrent */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FF00002F /* XCRemoteSwiftPackageReference "LibTorrent-Swift" */;
+			productName = "LibTorrent";
+		};
+/* End XCSwiftPackageProductDependency section */
 /* Begin XCConfigurationList section */
 		331C8087294A63A400263BE5 /* Build configuration list for PBXNativeTarget "RunnerTests" */ = {
 			isa = XCConfigurationList;
