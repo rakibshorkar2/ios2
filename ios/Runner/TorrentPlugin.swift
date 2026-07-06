@@ -22,8 +22,6 @@ class TorrentPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
         eventHandler.setStreamHandler(instance)
     }
 
-    // MARK: - FlutterStreamHandler
-
     func onListen(
         withArguments arguments: Any?,
         eventSink events: @escaping FlutterEventSink
@@ -36,8 +34,6 @@ class TorrentPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
         TorrentManager.shared.setEventSink(nil)
         return nil
     }
-
-    // MARK: - Method Call Handler
 
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         let args = call.arguments as? [String: Any] ?? [:]
@@ -58,11 +54,7 @@ class TorrentPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
                   let magnet = args["magnet"] as? String,
                   let savePath = args["savePath"] as? String
             else {
-                result(FlutterError(
-                    code: "INVALID_ARGS",
-                    message: "Missing required arguments for addMagnet",
-                    details: nil
-                ))
+                result(FlutterError(code: "INVALID_ARGS", message: "Missing required arguments for addMagnet", details: nil))
                 return
             }
             let sequential = args["isSequential"] as? Bool ?? false
@@ -70,11 +62,17 @@ class TorrentPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
             result(nil)
 
         case "addTorrentFile":
-            result(FlutterError(
-                code: "NOT_IMPLEMENTED",
-                message: "addTorrentFile not yet implemented",
-                details: nil
-            ))
+            guard let id = args["id"] as? String,
+                  let name = args["name"] as? String,
+                  let raw = args["fileData"] as? FlutterStandardTypedData,
+                  let savePath = args["savePath"] as? String
+            else {
+                result(FlutterError(code: "INVALID_ARGS", message: "Missing required arguments for addTorrentFile", details: nil))
+                return
+            }
+            let sequential = args["isSequential"] as? Bool ?? false
+            manager.addTorrentFile(id: id, name: name, data: raw.data, savePath: savePath, isSequential: sequential)
+            result(nil)
 
         case "pauseTorrent":
             guard let id = args["id"] as? String else {
@@ -102,8 +100,7 @@ class TorrentPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
             result(nil)
 
         case "getAllTorrents":
-            let torrents = manager.getAllTorrents()
-            result(torrents)
+            result(manager.getAllTorrents())
 
         case "setSequentialDownload":
             guard let id = args["id"] as? String,
@@ -116,13 +113,11 @@ class TorrentPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
             result(nil)
 
         case "setDownloadLimit":
-            let limit = args["bytesPerSecond"] as? Int ?? 0
-            manager.setDownloadLimit(limit)
+            manager.setDownloadLimit(args["bytesPerSecond"] as? Int ?? 0)
             result(nil)
 
         case "setUploadLimit":
-            let limit = args["bytesPerSecond"] as? Int ?? 0
-            manager.setUploadLimit(limit)
+            manager.setUploadLimit(args["bytesPerSecond"] as? Int ?? 0)
             result(nil)
 
         default:

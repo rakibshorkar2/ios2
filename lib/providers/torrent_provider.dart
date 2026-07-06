@@ -81,7 +81,15 @@ class TorrentProvider with ChangeNotifier {
     final state = map['state'] as String? ?? 'downloading';
 
     item.progress = (map['progress'] as num?)?.toDouble() ?? item.progress;
-    item.speed = _formatSpeed((map['downloadSpeed'] as num?)?.toInt() ?? 0);
+    item.downloadSpeed = (map['downloadSpeed'] as num?)?.toInt() ?? item.downloadSpeed;
+    item.uploadSpeed = (map['uploadSpeed'] as num?)?.toInt() ?? item.uploadSpeed;
+    item.downloaded = (map['downloaded'] as num?)?.toInt() ?? item.downloaded;
+    item.totalSize = (map['totalSize'] as num?)?.toInt() ?? item.totalSize;
+    item.eta = (map['eta'] as num?)?.toInt() ?? item.eta;
+    item.peers = (map['peers'] as num?)?.toInt() ?? item.peers;
+    item.seeds = (map['seeds'] as num?)?.toInt() ?? item.seeds;
+    item.speed = _formatSpeed(item.downloadSpeed);
+    item.ratio = (map['ratio'] as num?)?.toDouble() ?? item.ratio;
 
     switch (state) {
       case 'completed':

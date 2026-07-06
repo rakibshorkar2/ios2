@@ -10,6 +10,14 @@ class TorrentItem {
   double progress;
   String size;
   String speed;
+  int downloadSpeed;
+  int uploadSpeed;
+  int downloaded;
+  int totalSize;
+  int eta;
+  int peers;
+  int seeds;
+  double ratio;
   DateTime addedAt;
   bool isSequential;
 
@@ -23,6 +31,14 @@ class TorrentItem {
     this.progress = 0.0,
     this.size = '0 B',
     this.speed = '0 KB/s',
+    this.downloadSpeed = 0,
+    this.uploadSpeed = 0,
+    this.downloaded = 0,
+    this.totalSize = 0,
+    this.eta = 0,
+    this.peers = 0,
+    this.seeds = 0,
+    this.ratio = 0.0,
     required this.addedAt,
     this.isSequential = false,
   });

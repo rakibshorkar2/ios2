@@ -1,6 +1,6 @@
 import Foundation
 
-struct TorrentEvent: Codable {
+struct TorrentEvent {
     let id: String
     let name: String
     let progress: Double
@@ -30,16 +30,6 @@ struct TorrentEvent: Codable {
             "ratio": ratio,
         ]
     }
-}
-
-enum TorrentEventState: String {
-    case downloading
-    case seeding
-    case paused
-    case completed
-    case error
-    case checking
-    case queued
 }
 
 struct TorrentSnapshot: Codable {
