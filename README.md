@@ -398,10 +398,10 @@ ios/
 
 ```bash
 # Clone the repository
-git clone https://github.com/rakibshorkar2/dirxplore1.git
+git clone https://github.com/rakibshorkar2/ios2.git
 
 # Navigate to project
-cd dirxplore1
+cd ios2
 
 # Install dependencies
 flutter pub get
@@ -440,6 +440,6 @@ The project includes a GitHub Actions workflow that builds unsigned IPAs on push
 ### ✨ Created with ❤️ by **RAKIB**
 
 [![GitHub](https://img.shields.io/badge/GitHub-rakibshorkar2-181717?style=for-the-badge&logo=github)](https://github.com/rakibshorkar2)
-[![Repo](https://img.shields.io/badge/Repo-dirxplore1-FF6F00?style=for-the-badge&logo=git)](https://github.com/rakibshorkar2/dirxplore1)
+[![Repo](https://img.shields.io/badge/Repo-ios2-FF6F00?style=for-the-badge&logo=git)](https://github.com/rakibshorkar2/ios2)
 
 </div>
