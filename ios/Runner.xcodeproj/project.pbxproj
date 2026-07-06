@@ -51,7 +51,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = FF000040 /* LibTorrent.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = D151479D2AE7BE56000407AE;
+			remoteGlobalIDString = D15147642AE6AE9C000407AE;
 			remoteInfo = LibTorrent;
 		};
 /* End PBXContainerItemProxy section */
