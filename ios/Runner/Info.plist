@@ -60,10 +60,16 @@
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>audio</string>
 		<string>fetch</string>
+		<string>location</string>
 		<string>processing</string>
 		<string>download</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>DirXplore uses location to keep downloads alive in the background.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>DirXplore uses location in the background to keep downloads active.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

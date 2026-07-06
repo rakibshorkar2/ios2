@@ -32,6 +32,8 @@ class DownloadProvider with ChangeNotifier {
       EventChannel('com.dirxplore/live_activity_errors');
   static const MethodChannel _iosNotificationChannel =
       MethodChannel('com.dirxplore/notifications');
+  static const MethodChannel _backgroundServiceChannel =
+      MethodChannel('com.dirxplore/background_services');
   StreamSubscription? _iosEventSub;
   StreamSubscription? _liveActivityErrorSub;
 
@@ -46,6 +48,8 @@ class DownloadProvider with ChangeNotifier {
   double _totalStorage = 0;
   double _freeStorage = 0;
   bool _isProcessingQueue = false;
+
+  bool _backgroundServicesRunning = false;
 
   double get totalStorage => _totalStorage;
   double get freeStorage => _freeStorage;
@@ -891,6 +895,17 @@ class DownloadProvider with ChangeNotifier {
   void _syncLiveActivityState() {
     if (!_isIOS) return;
     final active = _queue.where((d) => d.status == DownloadStatus.downloading).toList();
+
+    if (active.isNotEmpty && !_backgroundServicesRunning) {
+      _backgroundServicesRunning = true;
+      _backgroundServiceChannel.invokeMethod('startBackgroundServices')
+          .catchError((e) => debugPrint('startBackgroundServices error: $e'));
+    } else if (active.isEmpty && _backgroundServicesRunning) {
+      _backgroundServicesRunning = false;
+      _backgroundServiceChannel.invokeMethod('stopBackgroundServices')
+          .catchError((e) => debugPrint('stopBackgroundServices error: $e'));
+    }
+
     if (active.isEmpty) {
       _liveActivityChannel.invokeMethod('updateActiveDownloads', {
         'count': 0,

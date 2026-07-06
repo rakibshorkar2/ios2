@@ -24,6 +24,9 @@ class DownloadPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
 
         let notificationChannel = FlutterMethodChannel(name: "com.dirxplore/notifications", binaryMessenger: messenger)
         registrar.addMethodCallDelegate(instance, channel: notificationChannel)
+
+        let backgroundChannel = FlutterMethodChannel(name: "com.dirxplore/background_services", binaryMessenger: messenger)
+        registrar.addMethodCallDelegate(instance, channel: backgroundChannel)
     }
 
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -188,6 +191,17 @@ class DownloadPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
                 let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
                 UNUserNotificationCenter.current().add(request)
             }
+            result(nil)
+
+        // Background Services
+        case "startBackgroundServices":
+            BackgroundAudioService.shared.start()
+            BackgroundLocationService.shared.start()
+            result(nil)
+
+        case "stopBackgroundServices":
+            BackgroundAudioService.shared.stop()
+            BackgroundLocationService.shared.stop()
             result(nil)
 
         default:
