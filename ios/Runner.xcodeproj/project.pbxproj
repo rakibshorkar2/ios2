@@ -24,6 +24,11 @@
 		FF00001F /* DownloadPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF00001E /* DownloadPlugin.swift */; };
 		FF000022 /* BackgroundAudioService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF000020 /* BackgroundAudioService.swift */; };
 		FF000023 /* BackgroundLocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF000021 /* BackgroundLocationService.swift */; };
+		FF00002A /* TorrentPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF000025 /* TorrentPlugin.swift */; };
+		FF00002B /* TorrentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF000026 /* TorrentManager.swift */; };
+		FF00002C /* TorrentSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF000027 /* TorrentSession.swift */; };
+		FF00002D /* TorrentEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF000028 /* TorrentEvents.swift */; };
+		FF00002E /* TorrentStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF000029 /* TorrentStorage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +100,11 @@
 		FF000020 /* BackgroundAudioService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundAudioService.swift; sourceTree = "<group>"; };
 		FF000021 /* BackgroundLocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundLocationService.swift; sourceTree = "<group>"; };
 		FF000024 /* WidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetExtension.entitlements; sourceTree = "<group>"; };
+		FF000025 /* TorrentPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentPlugin.swift; sourceTree = "<group>"; };
+		FF000026 /* TorrentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentManager.swift; sourceTree = "<group>"; };
+		FF000027 /* TorrentSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentSession.swift; sourceTree = "<group>"; };
+		FF000028 /* TorrentEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentEvents.swift; sourceTree = "<group>"; };
+		FF000029 /* TorrentStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentStorage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +183,11 @@
 		FF00001E /* DownloadPlugin.swift */,
 		FF000020 /* BackgroundAudioService.swift */,
 		FF000021 /* BackgroundLocationService.swift */,
+		FF000025 /* TorrentPlugin.swift */,
+		FF000026 /* TorrentManager.swift */,
+		FF000027 /* TorrentSession.swift */,
+		FF000028 /* TorrentEvents.swift */,
+		FF000029 /* TorrentStorage.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";

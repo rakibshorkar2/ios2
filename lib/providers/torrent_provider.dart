@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'dart:async';
+import 'dart:io' show Platform;
+import 'package:flutter/services.dart';
 import 'package:dtorrent_task_v2/dtorrent_task_v2.dart';
 import '../models/torrent_item.dart';
 import '../services/database_helper.dart';
@@ -14,20 +16,100 @@ class TorrentProvider with ChangeNotifier {
   List<String> get rssFeeds => _rssFeeds;
 
   double _downloadLimit = 0; // 0 = Unlimited
+  double _uploadLimit = 0;
+
+  static const MethodChannel _channel =
+      MethodChannel('com.dirxplore/torrent');
+  static const EventChannel _events =
+      EventChannel('com.dirxplore/torrent_events');
+  StreamSubscription<dynamic>? _eventSub;
+  bool get _isIOS => Platform.isIOS;
 
   void setLimits(double dl, double ul) {
     _downloadLimit = dl;
+    _uploadLimit = ul;
+    if (_isIOS) {
+      _channel.invokeMethod('setDownloadLimit', {'bytesPerSecond': dl.toInt()});
+      _channel.invokeMethod('setUploadLimit', {'bytesPerSecond': ul.toInt()});
+    }
     notifyListeners();
   }
 
   Future<void> init() async {
     if (_isInitialized) return;
-    final data = await DatabaseHelper().getTorrents();
-    _torrents.clear();
-    _torrents.addAll(data.map((json) => TorrentItem.fromJson(json)));
+
+    if (_isIOS) {
+      await _initIOS();
+    } else {
+      final data = await DatabaseHelper().getTorrents();
+      _torrents.clear();
+      _torrents.addAll(data.map((json) => TorrentItem.fromJson(json)));
+    }
     _isInitialized = true;
     notifyListeners();
-    // Restart active tasks from database next
+  }
+
+  Future<void> _initIOS() async {
+    try {
+      await _channel.invokeMethod('initialize');
+      final list = await _channel.invokeMethod<List<dynamic>>('getAllTorrents');
+      if (list != null) {
+        for (final item in list) {
+          if (item is Map) {
+            _torrents.add(TorrentItem.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            ));
+          }
+        }
+      }
+      _eventSub = _events.receiveBroadcastStream().listen(_handleNativeEvent);
+    } catch (e) {
+      debugPrint('Torrent iOS init error: $e');
+    }
+  }
+
+  void _handleNativeEvent(dynamic event) {
+    if (event is! Map) return;
+    final map = Map<String, dynamic>.from(event);
+    final id = map['id'] as String?;
+    if (id == null) return;
+
+    final index = _torrents.indexWhere((t) => t.id == id);
+    if (index == -1) return;
+
+    final item = _torrents[index];
+    final state = map['state'] as String? ?? 'downloading';
+
+    item.progress = (map['progress'] as num?)?.toDouble() ?? item.progress;
+    item.speed = _formatSpeed((map['downloadSpeed'] as num?)?.toInt() ?? 0);
+
+    switch (state) {
+      case 'completed':
+        item.status = TorrentStatus.completed;
+        break;
+      case 'paused':
+        item.status = TorrentStatus.paused;
+        break;
+      case 'seeding':
+        item.status = TorrentStatus.seeding;
+        break;
+      case 'error':
+        item.status = TorrentStatus.error;
+        break;
+      default:
+        item.status = TorrentStatus.downloading;
+    }
+
+    notifyListeners();
+  }
+
+  String _formatSpeed(int bytesPerSecond) {
+    if (bytesPerSecond >= 1024 * 1024) {
+      return '${(bytesPerSecond / (1024 * 1024)).toStringAsFixed(1)} MB/s';
+    } else if (bytesPerSecond >= 1024) {
+      return '${(bytesPerSecond / 1024).toStringAsFixed(0)} KB/s';
+    }
+    return '$bytesPerSecond B/s';
   }
 
   Future<Uint8List?> fetchMetadata(String magnet) async {
@@ -73,7 +155,17 @@ class TorrentProvider with ChangeNotifier {
     await DatabaseHelper().insertTorrent(newItem.toJson());
     notifyListeners();
 
-    _initAndStartTask(newItem, metadata: metadata);
+    if (_isIOS) {
+      _channel.invokeMethod('addMagnet', {
+        'id': id,
+        'name': name,
+        'magnet': magnet,
+        'savePath': savePath,
+        'isSequential': isSequential,
+      });
+    } else {
+      _initAndStartTask(newItem, metadata: metadata);
+    }
   }
 
   String _extractHash(String magnet) {
@@ -177,6 +269,7 @@ class TorrentProvider with ChangeNotifier {
   }
 
   Future<String?> startStreaming(String id, {String? filePath}) async {
+    if (_isIOS) return null;
     final task = _activeTasks[id];
     if (task == null) return null;
 
@@ -212,12 +305,14 @@ class TorrentProvider with ChangeNotifier {
 
   // Get all files for a task
   List<TorrentFileModel> getTaskFiles(String id) {
+    if (_isIOS) return [];
     final task = _activeTasks[id];
     if (task == null) return [];
     return task.metaInfo.files;
   }
 
   List<dynamic> getPeers(String id) {
+    if (_isIOS) return [];
     final task = _activeTasks[id];
     if (task == null) return [];
     return task.activePeers?.toList() ?? [];
@@ -225,6 +320,7 @@ class TorrentProvider with ChangeNotifier {
 
   // Helper to get tracker info if possible
   List<String> getTrackers(String id) {
+    if (_isIOS) return [];
     // TorrentTask doesn't easily expose tracker list in a public way without deep access
     // For now return dummy or based on metainfo
     final task = _activeTasks[id];
@@ -233,9 +329,13 @@ class TorrentProvider with ChangeNotifier {
   }
 
   void pauseTorrent(String id) {
-    final task = _activeTasks[id];
-    if (task != null) {
-      task.pause();
+    if (_isIOS) {
+      _channel.invokeMethod('pauseTorrent', {'id': id});
+    } else {
+      final task = _activeTasks[id];
+      if (task != null) {
+        task.pause();
+      }
     }
     final index = _torrents.indexWhere((t) => t.id == id);
     if (index != -1) {
@@ -251,7 +351,9 @@ class TorrentProvider with ChangeNotifier {
     if (index != -1) {
       _torrents[index].status = TorrentStatus.downloading;
 
-      if (_activeTasks.containsKey(id)) {
+      if (_isIOS) {
+        _channel.invokeMethod('resumeTorrent', {'id': id});
+      } else if (_activeTasks.containsKey(id)) {
         final task = _activeTasks[id];
         if (task != null) {
           task.resume();
@@ -271,26 +373,37 @@ class TorrentProvider with ChangeNotifier {
     if (index != -1) {
       final item = _torrents[index];
       item.isSequential = !item.isSequential;
-      
-      // If task is active, we might need to restart it to change selector
-      // dtorrent_task_v2 doesn't support changing selector on the fly easily
-      final task = _activeTasks[id];
-      if (task != null) {
-        await task.stop();
-        _activeTasks.remove(id);
-        await _initAndStartTask(item);
+
+      if (_isIOS) {
+        _channel.invokeMethod('setSequentialDownload', {
+          'id': id,
+          'enabled': item.isSequential,
+        });
+      } else {
+        // If task is active, we might need to restart it to change selector
+        // dtorrent_task_v2 doesn't support changing selector on the fly easily
+        final task = _activeTasks[id];
+        if (task != null) {
+          await task.stop();
+          _activeTasks.remove(id);
+          await _initAndStartTask(item);
+        }
       }
-      
+
       DatabaseHelper().updateTorrent(item.toJson());
       notifyListeners();
     }
   }
 
   void deleteTorrent(String id) async {
-    final task = _activeTasks[id];
-    if (task != null) {
-      await task.stop();
-      _activeTasks.remove(id);
+    if (_isIOS) {
+      _channel.invokeMethod('removeTorrent', {'id': id, 'deleteFiles': false});
+    } else {
+      final task = _activeTasks[id];
+      if (task != null) {
+        await task.stop();
+        _activeTasks.remove(id);
+      }
     }
     _torrents.removeWhere((t) => t.id == id);
     DatabaseHelper().deleteTorrent(id);
@@ -323,10 +436,15 @@ class TorrentProvider with ChangeNotifier {
 
   @override
   void dispose() {
-    for (var task in _activeTasks.values) {
-      task.stop();
+    _eventSub?.cancel();
+    if (_isIOS) {
+      _channel.invokeMethod('shutdown');
+    } else {
+      for (var task in _activeTasks.values) {
+        task.stop();
+      }
+      _activeTasks.clear();
     }
-    _activeTasks.clear();
     super.dispose();
   }
 }

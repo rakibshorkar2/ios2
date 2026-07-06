@@ -12,6 +12,11 @@ import UserNotifications
         if let registrar = self.registrar(forPlugin: "DownloadPlugin") {
             DownloadPlugin.register(with: registrar)
         }
+        if #available(iOS 16.0, *) {
+            if let registrar = self.registrar(forPlugin: "TorrentPlugin") {
+                TorrentPlugin.register(with: registrar)
+            }
+        }
 
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in }
 
