@@ -275,7 +275,7 @@ class DownloadManager: NSObject {
     // MARK: - Live Activities
 
     func startLiveActivity(downloadId: String, fileName: String) {
-        guard #available(iOS 16.1, *), liveActivityEnabled else { return }
+        guard #available(iOS 16.2, *), liveActivityEnabled else { return }
         fileNameMap[downloadId] = fileName
         let attributes = DownloadActivityAttributes(downloadId: downloadId)
         let state = DownloadActivityAttributes.ContentState(
@@ -299,7 +299,7 @@ class DownloadManager: NSObject {
     }
 
     func updateLiveActivity(downloadId: String, received: Int64, total: Int64) {
-        guard #available(iOS 16.1, *),
+        guard #available(iOS 16.2, *),
               let activity = liveActivities[downloadId] else { return }
         let fileName = fileNameMap[downloadId] ?? "Download"
         let state = DownloadActivityAttributes.ContentState(
@@ -315,7 +315,7 @@ class DownloadManager: NSObject {
     }
 
     func endLiveActivity(downloadId: String, status: String) {
-        guard #available(iOS 16.1, *),
+        guard #available(iOS 16.2, *),
               let activity = liveActivities.removeValue(forKey: downloadId) else { return }
 
         if let current = activity.content.state as? DownloadActivityAttributes.ContentState {
@@ -337,7 +337,7 @@ class DownloadManager: NSObject {
     }
 
     private func updateLiveActivityFileName(downloadId: String, fileName: String) {
-        guard #available(iOS 16.1, *),
+        guard #available(iOS 16.2, *),
               let activity = liveActivities[downloadId] else { return }
         let current = activity.content.state as? DownloadActivityAttributes.ContentState
         let state = DownloadActivityAttributes.ContentState(
@@ -353,7 +353,7 @@ class DownloadManager: NSObject {
     }
 
     func endAllLiveActivities() {
-        guard #available(iOS 16.1, *), liveActivityEnabled else { return }
+        guard #available(iOS 16.2, *), liveActivityEnabled else { return }
         for (_, activity) in liveActivities {
             Task {
                 await activity.end(dismissalPolicy: .immediate)
