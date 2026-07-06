@@ -18,13 +18,13 @@ Specifically:
    - minimal
    - expanded
 5. In the expanded view display:
-   - file icon
+   
    - file name
-   - progress bar
+   
    - percentage
    - downloaded size / total size
    - download speed
-   - ETA
+   
    - download status
 6. Use the existing Activity instead of creating a new one.
 7. Keep updating the existing Live Activity from Flutter through the existing MethodChannel.

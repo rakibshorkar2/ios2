@@ -10,19 +10,25 @@ struct DownloadLiveActivity: Widget {
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    Image(
-                        systemName: iconName(
-                            for: context.state.status,
-                            isCompleted: context.state.isCompleted
+                    HStack(spacing: 4) {
+                        Image(
+                            systemName: iconName(
+                                for: context.state.status,
+                                isCompleted: context.state.isCompleted
+                            )
                         )
-                    )
-                    .foregroundColor(
-                        iconColor(
-                            for: context.state.status,
-                            isCompleted: context.state.isCompleted
+                        .foregroundColor(
+                            iconColor(
+                                for: context.state.status,
+                                isCompleted: context.state.isCompleted
+                            )
                         )
-                    )
-                    .font(.title2)
+                        .font(.caption)
+                        Text(context.state.fileName)
+                            .font(.caption)
+                            .lineLimit(1)
+                            .foregroundColor(.white)
+                    }
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     Text(
@@ -30,56 +36,41 @@ struct DownloadLiveActivity: Widget {
                             ? "Done"
                             : "\(Int(context.state.progress * 100))%"
                     )
-                    .font(.title2)
+                    .font(.callout)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
                 }
-                DynamicIslandExpandedRegion(.center) {
-                    Text(context.state.fileName)
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .lineLimit(1)
-                        .foregroundColor(.white)
-                }
                 DynamicIslandExpandedRegion(.bottom) {
-                    VStack(spacing: 6) {
-                        ProgressView(
-                            value: context.state.isCompleted
-                                ? 1.0 : context.state.progress
-                        )
-                        .tint(context.state.isCompleted ? .green : .blue)
-
+                    VStack(spacing: 4) {
+                        ProgressView(value: context.state.progress)
                         HStack {
                             HStack(spacing: 4) {
                                 Image(systemName: "arrow.down.circle")
                                     .font(.caption2)
                                 Text(context.state.speed)
                                     .font(.caption2)
+                                    .lineLimit(1)
                             }
                             .foregroundColor(.green)
-
                             Spacer()
-
                             Text(context.state.status)
                                 .font(.caption2)
-                                .foregroundColor(.secondary)
-
+                                .foregroundColor(.white)
                             Spacer()
-
                             HStack(spacing: 4) {
                                 Image(systemName: "clock")
                                     .font(.caption2)
                                 Text(context.state.eta)
                                     .font(.caption2)
+                                    .lineLimit(1)
                             }
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.gray)
                         }
-
                         Text(
                             "\(context.state.downloadedSize) / \(context.state.totalSize)"
                         )
                         .font(.caption2)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.gray)
                     }
                 }
             } compactLeading: {
