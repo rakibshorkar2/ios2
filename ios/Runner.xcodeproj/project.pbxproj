@@ -29,6 +29,7 @@
 		FF00002C /* TorrentSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF000027 /* TorrentSession.swift */; };
 		FF00002D /* TorrentEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF000028 /* TorrentEvents.swift */; };
 		FF00002E /* TorrentStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF000029 /* TorrentStorage.swift */; };
+		FF000041 /* LibTorrent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF000040 /* LibTorrent.xcodeproj */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = FF000011;
 			remoteInfo = WidgetExtension;
+		};
+		FF000043 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FF000040 /* LibTorrent.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D151479D2AE7BE56000407AE;
+			remoteInfo = LibTorrent;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -105,6 +113,7 @@
 		FF000027 /* TorrentSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentSession.swift; sourceTree = "<group>"; };
 		FF000028 /* TorrentEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentEvents.swift; sourceTree = "<group>"; };
 		FF000029 /* TorrentStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentStorage.swift; sourceTree = "<group>"; };
+		FF000040 /* LibTorrent.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LibTorrent.xcodeproj; path = LibTorrent-Swift/LibTorrent.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +161,7 @@
 				97C146EF1CF9000F007C117D /* Products */,
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				FF000010 /* WidgetExtension */,
+				FF000040 /* LibTorrent.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -256,11 +266,9 @@
 			);
 			dependencies = (
 				FF000017 /* PBXTargetDependency */,
+				FF000042 /* PBXTargetDependency */,
 			);
 			name = Runner;
-			packageProductDependencies = (
-				FF000030 /* LibTorrent */,
-			);
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
@@ -316,6 +324,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF000041 /* LibTorrent.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -425,6 +434,11 @@
 			target = FF000011 /* WidgetExtension */;
 			targetProxy = FF000016 /* PBXContainerItemProxy */;
 		};
+		FF000042 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = LibTorrent;
+			targetProxy = FF000043 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -519,6 +533,10 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/LibTorrent-Swift/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+				);
 			};
 			name = Profile;
 		};
@@ -701,6 +719,10 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/LibTorrent-Swift/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+				);
 			};
 			name = Debug;
 		};
@@ -724,6 +746,10 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/LibTorrent-Swift/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+				);
 			};
 			name = Release;
 		};
