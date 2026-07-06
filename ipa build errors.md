@@ -7,10 +7,6 @@
 
 ---
 
-**Current error (2026-07-06):**
-```
-Lexical or Preprocessor Issue (Xcode): 'libtorrent/torrent_handle.hpp' file not found
-/Users/runner/work/ios2/ios2/ios/LibTorrent-Swift/LibTorrent/Core/TorrentHandle/TorrentHandle_Internal.h:10:8
-```
+~~setup_libtorrent.sh runs but CMake fails: Could NOT find Boost (missing: Boost_INCLUDE_DIR)~~
 
-**Fix needed:** Add `ios/setup_libtorrent.sh` step to CI workflow before `flutter build ios` to clone arvidn/libtorrent v2.0.10 and run CMake.
+**FIXED:** Added `brew install boost` to CI workflow before `setup_libtorrent.sh`.
