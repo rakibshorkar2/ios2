@@ -815,24 +815,9 @@
 		};
 /* End XCBuildConfiguration section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		FF00002F /* XCRemoteSwiftPackageReference "LibTorrent-Swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/XITRIX/LibTorrent-Swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
 
-/* Begin XCSwiftPackageProductDependency section */
-		FF000030 /* LibTorrent */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = FF00002F /* XCRemoteSwiftPackageReference "LibTorrent-Swift" */;
-			productName = "LibTorrent";
-		};
-/* End XCSwiftPackageProductDependency section */
+
+
 /* Begin XCConfigurationList section */
 		331C8087294A63A400263BE5 /* Build configuration list for PBXNativeTarget "RunnerTests" */ = {
 			isa = XCConfigurationList;

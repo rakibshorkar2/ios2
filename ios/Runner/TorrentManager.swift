@@ -2,6 +2,7 @@ import Foundation
 import Flutter
 
 @available(iOS 16.0, *)
+@available(iOS 16.0, *)
 class TorrentManager: @unchecked Sendable {
     static let shared = TorrentManager()
 
