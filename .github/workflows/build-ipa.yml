@@ -17,8 +17,10 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Flutter pub get
-        run: flutter pub get
+      - name: Clean and get dependencies
+        run: |
+          flutter clean
+          flutter pub get
 
       - name: Build iOS (no codesign)
         run: flutter build ios --release --no-codesign

@@ -42,7 +42,20 @@ struct DownloadLiveActivity: Widget {
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     VStack(spacing: 4) {
-                        ProgressView(value: context.state.progress)
+                        GeometryReader { geo in
+                            ZStack(alignment: .leading) {
+                                RoundedRectangle(cornerRadius: 2)
+                                    .fill(Color.white.opacity(0.2))
+                                    .frame(height: 6)
+                                RoundedRectangle(cornerRadius: 2)
+                                    .fill(Color.blue)
+                                    .frame(
+                                        width: geo.size.width * CGFloat(context.state.progress),
+                                        height: 6
+                                    )
+                            }
+                        }
+                        .frame(height: 6)
                         HStack {
                             HStack(spacing: 4) {
                                 Image(systemName: "arrow.down.circle")

@@ -94,6 +94,7 @@
 		FF00001E /* DownloadPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadPlugin.swift; sourceTree = "<group>"; };
 		FF000020 /* BackgroundAudioService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundAudioService.swift; sourceTree = "<group>"; };
 		FF000021 /* BackgroundLocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundLocationService.swift; sourceTree = "<group>"; };
+		FF000024 /* WidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,7 +182,8 @@
 			children = (
 				FF000004 /* WidgetExtensionBundle.swift */,
 				FF000006 /* DownloadLiveActivity.swift */,
-					FF000008 /* Info.plist */,
+				FF000008 /* Info.plist */,
+				FF000024 /* WidgetExtension.entitlements */,
 			);
 			path = WidgetExtension;
 			sourceTree = "<group>";
@@ -704,6 +706,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = WidgetExtension/WidgetExtension.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ABCDEF1234;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -733,6 +736,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = WidgetExtension/WidgetExtension.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ABCDEF1234;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -760,6 +764,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = WidgetExtension/WidgetExtension.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ABCDEF1234;
 				GENERATE_INFOPLIST_FILE = YES;
