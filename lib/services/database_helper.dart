@@ -20,7 +20,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'dirxplore_downloads.db');
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -50,6 +50,9 @@ class DatabaseHelper {
     if (oldVersion < 2) {
       await _createTorrentsTable(db);
     }
+    if (oldVersion < 3) {
+      await db.execute('ALTER TABLE torrents ADD COLUMN isSequential INTEGER DEFAULT 0');
+    }
   }
 
   Future<void> _createTorrentsTable(Database db) async {
@@ -64,7 +67,8 @@ class DatabaseHelper {
         progress REAL,
         size TEXT,
         speed TEXT,
-        addedAt TEXT
+        addedAt TEXT,
+        isSequential INTEGER DEFAULT 0
       )
     ''');
   }

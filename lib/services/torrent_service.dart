@@ -122,6 +122,93 @@ class TorrentService {
         case TorrentSearchProvider.idope:
           searchTasks.add(searchIDope(query, useProxy: useProxy));
           break;
+        case TorrentSearchProvider.rarbg:
+          searchTasks.add(_searchApiListOne('rarbg', query, useProxy: useProxy, provider: 'RARBG'));
+          break;
+        case TorrentSearchProvider.rutor:
+          searchTasks.add(_searchApiListOne('rutor', query, useProxy: useProxy, provider: 'RuTor'));
+          break;
+        case TorrentSearchProvider.isohunt:
+          searchTasks.add(_searchApiListOne('isohunt', query, useProxy: useProxy, provider: 'ISO'));
+          break;
+        case TorrentSearchProvider.zooqle:
+          searchTasks.add(_searchApiListOne('zooqle', query, useProxy: useProxy, provider: 'Zooqle'));
+          break;
+        case TorrentSearchProvider.bitsearch:
+          searchTasks.add(searchBitsearch(query, useProxy: useProxy));
+          break;
+        case TorrentSearchProvider.extratorrent:
+          searchTasks.add(_searchApiListOne('extratorrent', query, useProxy: useProxy, provider: 'ET'));
+          break;
+        case TorrentSearchProvider.torrentFunk:
+          searchTasks.add(_searchApiListOne('torrentfunk', query, useProxy: useProxy, provider: 'TFunk'));
+          break;
+        case TorrentSearchProvider.soft:
+          searchTasks.add(_searchApiListOne('soft', query, useProxy: useProxy, provider: 'Soft'));
+          break;
+        case TorrentSearchProvider.animeTime:
+          searchTasks.add(_searchApiListOne('anime', query, useProxy: useProxy, provider: 'Anime'));
+          break;
+        case TorrentSearchProvider.animeTosho:
+          searchTasks.add(_searchApiListOne('animetosho', query, useProxy: useProxy, provider: 'AT'));
+          break;
+        case TorrentSearchProvider.anirena:
+          searchTasks.add(_searchApiListOne('anirena', query, useProxy: useProxy, provider: 'ARena'));
+          break;
+        case TorrentSearchProvider.anisource:
+          searchTasks.add(_searchApiListOne('anisource', query, useProxy: useProxy, provider: 'ASrc'));
+          break;
+        case TorrentSearchProvider.arabTorrents:
+          searchTasks.add(_searchApiListOne('arab', query, useProxy: useProxy, provider: 'Arab'));
+          break;
+        case TorrentSearchProvider.blueRoms:
+          searchTasks.add(_searchApiListOne('blueroms', query, useProxy: useProxy, provider: 'Blue'));
+          break;
+        case TorrentSearchProvider.btEtree:
+          searchTasks.add(_searchApiListOne('btetree', query, useProxy: useProxy, provider: 'BTE'));
+          break;
+        case TorrentSearchProvider.btDirectory:
+          searchTasks.add(_searchApiListOne('btdb', query, useProxy: useProxy, provider: 'BTDB'));
+          break;
+        case TorrentSearchProvider.cloudTorrents:
+          searchTasks.add(_searchApiListOne('cloudtorrents', query, useProxy: useProxy, provider: 'Cloud'));
+          break;
+        case TorrentSearchProvider.corsaroNero:
+          searchTasks.add(_searchApiListOne('corsaro', query, useProxy: useProxy, provider: 'CN'));
+          break;
+        case TorrentSearchProvider.cpasbien:
+          searchTasks.add(_searchApiListOne('cpasbien', query, useProxy: useProxy, provider: 'CP'));
+          break;
+        case TorrentSearchProvider.fitgirl:
+          searchTasks.add(_searchApiListOne('fitgirl', query, useProxy: useProxy, provider: 'FG'));
+          break;
+        case TorrentSearchProvider.gamesTorrents:
+          searchTasks.add(_searchApiListOne('games', query, useProxy: useProxy, provider: 'Gm'));
+          break;
+        case TorrentSearchProvider.linuxTracker:
+          searchTasks.add(_searchApiListOne('linuxtracker', query, useProxy: useProxy, provider: 'LX'));
+          break;
+        case TorrentSearchProvider.megaPeer:
+          searchTasks.add(_searchApiListOne('megapeer', query, useProxy: useProxy, provider: 'MP'));
+          break;
+        case TorrentSearchProvider.nonameClub:
+          searchTasks.add(_searchApiListOne('noname', query, useProxy: useProxy, provider: 'NN'));
+          break;
+        case TorrentSearchProvider.redeTorrent:
+          searchTasks.add(_searchApiListOne('rede', query, useProxy: useProxy, provider: 'Rede'));
+          break;
+        case TorrentSearchProvider.torrentCSV:
+          searchTasks.add(_searchApiListOne('torrentcsv', query, useProxy: useProxy, provider: 'CSV'));
+          break;
+        case TorrentSearchProvider.torrentCore:
+          searchTasks.add(_searchApiListOne('torrentcore', query, useProxy: useProxy, provider: 'TC'));
+          break;
+        case TorrentSearchProvider.torrentoyunindir:
+          searchTasks.add(_searchApiListOne('torrentoyun', query, useProxy: useProxy, provider: 'TOY'));
+          break;
+        case TorrentSearchProvider.yourBitTorrent:
+          searchTasks.add(_searchApiListOne('yourbittorrent', query, useProxy: useProxy, provider: 'YBT'));
+          break;
         default:
           break;
       }
@@ -445,6 +532,64 @@ class TorrentService {
       }
     } catch (_) {}
     return [];
+  }
+
+  static Future<List<TorrentSearchResult>> _searchApiListOne(
+    String endpoint, String query, {
+    bool useProxy = false,
+    String provider = '',
+  }) async {
+    try {
+      final dio = useProxy ? DioClient().dio : DioClient().cleanDio;
+      final response = await dio.get(
+        'https://api.apilist.one/$endpoint',
+        queryParameters: {'q': query},
+      );
+      final data = response.data;
+      final List items = (data is List) ? data : (data['data'] ?? []);
+      return items.map((item) {
+        return TorrentSearchResult(
+          title: item['name'] ?? '',
+          magnet: item['magnet'] ?? '',
+          size: item['size'] ?? 'Unknown',
+          seeds: (item['seeders'] ?? 0).toString(),
+          peers: (item['leechers'] ?? 0).toString(),
+          hash: _extHash(item['magnet'] ?? ''),
+          provider: provider,
+        );
+      }).toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  static Future<List<TorrentSearchResult>> searchBitsearch(String query,
+      {bool useProxy = false}) async {
+    try {
+      final dio = useProxy ? DioClient().dio : DioClient().cleanDio;
+      final response = await dio.get(
+        'https://bitsearch.to/search',
+        queryParameters: {'q': query},
+      );
+      final data = response.data;
+      if (data == null) return [];
+      final List items = data['data']?['results'] ?? [];
+      return items.map((item) {
+        final hash = item['infoHash'] ?? '';
+        final magnet = 'magnet:?xt=urn:btih:$hash&dn=${Uri.encodeComponent(item['name'] ?? '')}';
+        return TorrentSearchResult(
+          title: item['name'] ?? '',
+          magnet: magnet,
+          size: formatBytes(int.tryParse(item['size']?.toString() ?? '0') ?? 0),
+          seeds: (item['seeders'] ?? 0).toString(),
+          peers: (item['leechers'] ?? 0).toString(),
+          hash: hash,
+          provider: 'Bitsearch',
+        );
+      }).toList();
+    } catch (_) {
+      return [];
+    }
   }
 
   static String _extHash(String magnet) {
