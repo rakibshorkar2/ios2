@@ -8,11 +8,11 @@ class TorrentPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
 
     static func register(with registrar: FlutterPluginRegistrar) {
         let messenger = registrar.messenger()
-        let methodHandler = MethodChannel(
+        let methodHandler = FlutterMethodChannel(
             name: methodChannel,
             binaryMessenger: messenger
         )
-        let eventHandler = EventChannel(
+        let eventHandler = FlutterEventChannel(
             name: eventChannel,
             binaryMessenger: messenger
         )

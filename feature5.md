@@ -35,4 +35,4 @@ Specifically:
 12. Explain exactly why the expanded Dynamic Island was not appearing.
 13. Do not modify unrelated Flutter code.
 
-The goal is that when I long-press the Dynamic Island during a download, it expands into Apple's standard expanded Dynamic Island showing live download progress.
+The goal is that when I long-press the Dynamic Island during a download, it expands into Apple's standard expanded Dynamic Island showing live download progress. 
