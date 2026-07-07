@@ -28,19 +28,18 @@ class TorrentManager: NSObject {
             try? FileManager.default.createDirectory(at: p, withIntermediateDirectories: true)
         }
 
-        let settings = SessionSettings()
+        let settings = Session.Settings()
         settings.maxDownloadSpeed = UInt(max(0, UserDefaults.standard.integer(forKey: "download_limit")))
         settings.maxUploadSpeed = UInt(max(0, UserDefaults.standard.integer(forKey: "upload_limit")))
 
-        session = Session(
-            downloadPath: dlPath,
-            torrentsPath: torPath,
-            fastResumePath: frPath,
-            settings: settings,
-            storages: [:]
-        )
-        session?.addDelegate(self)
-        session?.restoreSession()
+        session = Session()
+        session?.downloadPath = dlPath
+        session?.torrentsPath = torPath
+        session?.fastResumePath = frPath
+        session?.settings = settings
+        session?.storages = [:]
+        session?.add(self)
+        session?.restore()
 
         let saved = storage.loadTorrents()
         for snap in saved {
@@ -51,7 +50,7 @@ class TorrentManager: NSObject {
     }
 
     func shutdown() {
-        session?.removeDelegate(self)
+        session?.remove(self)
         session = nil
         torrents.removeAll()
         idByHash.removeAll()
@@ -152,20 +151,20 @@ class TorrentManager: NSObject {
     }
 
     private func hashString(from handle: TorrentHandle) -> String? {
-        handle.infoHashes?.best?.hex()
+        handle.infoHashes.best.hex
     }
 
     private func torrentHash(fromHex hex: String) -> TorrentHashes? {
         nil
     }
 
-    private func eta(from snapshot: TorrentHandleSnapshot) -> Int {
+    private func eta(from snapshot: TorrentHandle.Snapshot) -> Int {
         guard snapshot.downloadRate > 0 else { return 0 }
         let remaining = snapshot.total - snapshot.totalDone
         return Int(remaining / snapshot.downloadRate)
     }
 
-    private func stateString(from state: TorrentHandleState) -> String {
+    private func stateString(from state: TorrentHandle.State) -> String {
         switch state {
         case .checkingFiles, .checkingResumeData: return "checking"
         case .downloadingMetadata, .downloading: return "downloading"
@@ -191,7 +190,7 @@ class TorrentManager: NSObject {
             return TorrentSnapshot(
                 id: id,
                 name: s.name ?? "",
-                hash: handle.infoHashes?.best?.hex() ?? "",
+                hash: handle.infoHashes.best.hex,
                 magnetLink: s.magnetLink ?? "",
                 savePath: s.downloadPath?.path ?? "",
                 state: stateString(from: s.state),
@@ -217,8 +216,8 @@ extension TorrentManager: SessionDelegate {
     }
 
     func torrentManager(_ manager: Session, didRemoveTorrentWithHash hashesData: TorrentHashes) {
-        guard let hashStr = hashesData.best?.hex(),
-              let id = idByHash[hashStr]
+        let hashStr = hashesData.best.hex
+        guard let id = idByHash[hashStr]
         else { return }
         torrents.removeValue(forKey: id)
         idByHash.removeValue(forKey: hashStr)

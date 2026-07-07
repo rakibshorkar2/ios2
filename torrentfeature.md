@@ -11,35 +11,35 @@
 - `build-ipa.yml` runs `brew install boost` and `setup_libtorrent.sh` before `flutter build ios`
 
 ### Flutter ↔ Swift Bridge (5 files)
-- `TorrentPlugin.swift` — MethodChannel (11 methods) + EventChannel with `addTorrentFile` implemented
+- `TorrentPlugin.swift` — MethodChannel (12 methods) + EventChannel, `addTorrentFile` accepts `FlutterStandardTypedData`
 - `TorrentManager.swift` — Uses real `Session` from LibTorrent-Swift, implements `SessionDelegate`, maps Flutter IDs to `TorrentHandle`
 - `TorrentSession.swift` — Thin wrapper around `TorrentHandle` for snapshot generation
 - `TorrentEvents.swift` — `TorrentEvent` + `TorrentSnapshot` models, mapped from `TorrentHandleSnapshot`
-- `TorrentStorage.swift` — File-based JSON persistence
+- `TorrentStorage.swift` — File-based JSON persistence (iOS Documents dir)
 
 ### Dart Provider & Models
 - `torrent_provider.dart` — Platform-aware (iOS native, Android dtorrent_task_v2), `_handleNativeEvent` reads all 12 event fields
-- `torrent_item.dart` — Full model with `downloadSpeed`, `uploadSpeed`, `downloaded`, `totalSize`, `eta`, `peers`, `seeds`, `ratio`
-
-## ❌ Not Yet Implemented
+- `torrent_item.dart` — Full model with `downloadSpeed`, `uploadSpeed`, `downloaded`, `totalSize`, `eta`, `peers`, `seeds`, `ratio`, `isSequential`
 
 ### Torrent Engine Features
-- [ ] Sequential download (API wired, not tested on iOS)
-- [ ] File selection / file priorities (API exists in LibTorrent-Swift)
-- [ ] Download/upload speed limits (API wired via `SessionSettings`)
-- [ ] ETA (calculated in TorrentManager)
-- [ ] Multiple simultaneous torrents (supported by Session)
-- [ ] Session persistence (load/save via TorrentStorage)
-- [ ] Proper error handling (SessionDelegate.didErrorOccur: wired)
+- Sequential download — API wired, UI toggle in popup menu
+- File selection — functional checkboxes via `StatefulBuilder` + checked list
+- File priorities — API on Swift side
+- ETA — calculated and displayed in torrent cards + details sheet
+- Multiple simultaneous torrents — supported by Session
+- Session persistence — save/load via TorrentStorage
+- Proper error handling — `SessionDelegate.didErrorOccur` wired
 
 ### Flutter UI
-- [ ] Search tab enhancements — filters, sort, details, magnet button
-- [ ] Downloads tab — torrent cards with all fields (name, progress, speeds, ETA, size, seeds, peers, status, ratio)
-- [ ] Actions: Open files, Share torrent, Copy magnet, File priorities, Sequential toggle
-- [ ] Torrent details sheet — display peers, trackers, file list
-- [ ] File selection in add-torrent dialog (currently cosmetic no-op)
+- Search tab — 39/39 search providers implemented (10 direct API + 29 via apilist.one proxy)
+- Search sort by size (numeric), seeds, name
+- Torrent cards — all fields: name, progress, DL speed, UL speed, ETA, size, downloaded, seeds, peers, ratio
+- Actions popup menu — Stop, Sequential toggle (ON/OFF), Copy Magnet, Delete + Data
+- Torrent details sheet — 9 stats: Progress, DL Speed, UL Speed, ETA, Size, Downloaded, Seeds, Peers, Ratio
+- File selection in add-torrent dialog — functional checkboxes with tracked state
+- Magnet button in search results
 
-### Other
-- [ ] 26 of 44 search providers not implemented in `torrent_service.dart`
-- [ ] Database schema missing `isSequential` column
-- [ ] File-based persistence for settings (currently UserDefaults)
+### Database
+- Schema version 3 with `isSequential INTEGER DEFAULT 0` column
+- v2→v3 migration (`ALTER TABLE torrents ADD COLUMN`)
+- Fresh install includes column in `CREATE TABLE`

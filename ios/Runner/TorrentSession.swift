@@ -18,7 +18,7 @@ class TorrentSession: Identifiable {
         return TorrentSnapshot(
             id: id,
             name: s.name ?? "",
-            hash: h.infoHashes?.best?.hex() ?? "",
+            hash: h.infoHashes.best.hex,
             magnetLink: s.magnetLink ?? "",
             savePath: s.downloadPath?.path ?? savePath,
             state: stateString(from: s.state),
@@ -47,12 +47,12 @@ class TorrentSession: Identifiable {
     func stop() { handle?.pause() }
 
     func remove(deleteFiles: Bool = false) {
-        guard let h = handle, let session = h.session else { return }
-        session.removeTorrent(h, deleteFiles: deleteFiles)
+        guard let h = handle else { return }
+        h.session.removeTorrent(h, deleteFiles: deleteFiles)
         handle = nil
     }
 
-    private func stateString(from state: TorrentHandleState) -> String {
+    private func stateString(from state: TorrentHandle.State) -> String {
         switch state {
         case .checkingFiles, .checkingResumeData: return "checking"
         case .downloadingMetadata, .downloading: return "downloading"
