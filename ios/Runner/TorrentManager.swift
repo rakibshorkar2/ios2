@@ -33,9 +33,9 @@ class TorrentManager: NSObject {
         settings.maxUploadSpeed = UInt(max(0, UserDefaults.standard.integer(forKey: "upload_limit")))
 
         session = Session()
-        session?.downloadPath = dlPath
-        session?.torrentsPath = torPath
-        session?.fastResumePath = frPath
+        session?.downloadPath = dlPath.path
+        session?.torrentsPath = torPath.path
+        session?.fastResumePath = frPath.path
         session?.settings = settings
         session?.storages = [:]
         session?.add(self)
