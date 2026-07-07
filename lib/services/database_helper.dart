@@ -40,7 +40,14 @@ class DatabaseHelper {
         downloadedBytes INTEGER,
         retryCount INTEGER,
         errorMessage TEXT,
-        addedAt TEXT
+        addedAt TEXT,
+        downloadType INTEGER DEFAULT 0,
+        torrentHash TEXT,
+        torrentMagnetLink TEXT,
+        torrentName TEXT,
+        seeders INTEGER DEFAULT 0,
+        peers INTEGER DEFAULT 0,
+        uploadSpeedBytesPerSec REAL DEFAULT 0.0
       )
     ''');
     await _createTorrentsTable(db);
@@ -52,7 +59,18 @@ class DatabaseHelper {
     }
     if (oldVersion < 3) {
       await db.execute('ALTER TABLE torrents ADD COLUMN isSequential INTEGER DEFAULT 0');
+      await _addTorrentDownloadColumns(db);
     }
+  }
+
+  Future<void> _addTorrentDownloadColumns(Database db) async {
+    await db.execute('ALTER TABLE downloads ADD COLUMN downloadType INTEGER DEFAULT 0');
+    await db.execute('ALTER TABLE downloads ADD COLUMN torrentHash TEXT');
+    await db.execute('ALTER TABLE downloads ADD COLUMN torrentMagnetLink TEXT');
+    await db.execute('ALTER TABLE downloads ADD COLUMN torrentName TEXT');
+    await db.execute('ALTER TABLE downloads ADD COLUMN seeders INTEGER DEFAULT 0');
+    await db.execute('ALTER TABLE downloads ADD COLUMN peers INTEGER DEFAULT 0');
+    await db.execute('ALTER TABLE downloads ADD COLUMN uploadSpeedBytesPerSec REAL DEFAULT 0.0');
   }
 
   Future<void> _createTorrentsTable(Database db) async {

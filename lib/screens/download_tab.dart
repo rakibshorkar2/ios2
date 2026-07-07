@@ -530,6 +530,26 @@ class _DownloadTabState extends State<DownloadTab> {
                       ),
                     ],
                   ),
+                  if (item.isTorrent && item.status == DownloadStatus.downloading) ...[
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(Icons.arrow_upward, size: 10, color: cs.onSurface.withValues(alpha: 0.6)),
+                        const SizedBox(width: 2),
+                        Text(
+                          _formatSpeed(item.uploadSpeedBytesPerSec),
+                          style: TextStyle(fontSize: 10, color: cs.onSurface.withValues(alpha: 0.6)),
+                        ),
+                        const SizedBox(width: 12),
+                        Icon(Icons.people, size: 10, color: cs.onSurface.withValues(alpha: 0.6)),
+                        const SizedBox(width: 2),
+                        Text(
+                          'S: ${item.seeders} P: ${item.peers}',
+                          style: TextStyle(fontSize: 10, color: cs.onSurface.withValues(alpha: 0.6)),
+                        ),
+                      ],
+                    ),
+                  ],
                   if (item.errorMessage != null) ...[
                     const SizedBox(height: 4),
                     Text(item.errorMessage!,
@@ -916,15 +936,7 @@ class _DownloadTabState extends State<DownloadTab> {
     if (item.status == DownloadStatus.error) return 'Failed';
     if (item.speedBytesPerSec <= 0) return '0 B/s';
 
-    String speedStr = '';
-    if (item.speedBytesPerSec > 1024 * 1024) {
-      speedStr =
-          '${(item.speedBytesPerSec / (1024 * 1024)).toStringAsFixed(1)} MB/s';
-    } else if (item.speedBytesPerSec > 1024) {
-      speedStr = '${(item.speedBytesPerSec / 1024).toStringAsFixed(1)} KB/s';
-    } else {
-      speedStr = '${item.speedBytesPerSec.toStringAsFixed(0)} B/s';
-    }
+    String speedStr = _formatSpeed(item.speedBytesPerSec);
 
     int mm = item.etaSeconds ~/ 60;
     int ss = item.etaSeconds % 60;
@@ -941,5 +953,15 @@ class _DownloadTabState extends State<DownloadTab> {
     }
 
     return '$speedStr \u00b7 $etaStr';
+  }
+
+  String _formatSpeed(double speedBytesPerSec) {
+    if (speedBytesPerSec > 1024 * 1024) {
+      return '${(speedBytesPerSec / (1024 * 1024)).toStringAsFixed(1)} MB/s';
+    } else if (speedBytesPerSec > 1024) {
+      return '${(speedBytesPerSec / 1024).toStringAsFixed(1)} KB/s';
+    } else {
+      return '${speedBytesPerSec.toStringAsFixed(0)} B/s';
+    }
   }
 }

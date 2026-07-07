@@ -23,6 +23,7 @@ import 'screens/torrent_tab.dart';
 import 'providers/app_state.dart';
 import 'providers/proxy_provider.dart';
 import 'providers/download_provider.dart';
+import 'models/proxy_model.dart' show ProxyModel;
 import 'providers/browser_provider.dart';
 import 'providers/torrent_provider.dart';
 import 'services/proxy_tunnel.dart';
@@ -91,7 +92,21 @@ void main() async {
       providers: [
         ChangeNotifierProvider.value(value: appState),
         ChangeNotifierProvider.value(value: proxyProvider),
-        ChangeNotifierProvider.value(value: dlProvider),
+        ChangeNotifierProxyProvider<AppProxyProvider, DownloadProvider>(
+          create: (_) => dlProvider,
+          update: (_, proxyProvider, dlProvider) {
+            ProxyModel? activeProxy;
+            try {
+              activeProxy = proxyProvider.proxies.firstWhere(
+                (p) => p.isActive,
+              );
+            } catch (_) {
+              activeProxy = null;
+            }
+            dlProvider?.setActiveProxy(activeProxy);
+            return dlProvider!;
+          },
+        ),
         ChangeNotifierProxyProvider<AppState, TorrentProvider>(
           create: (_) => torrentProvider,
           update: (_, appState, torrent) {

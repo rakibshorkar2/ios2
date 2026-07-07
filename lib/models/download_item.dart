@@ -1,5 +1,7 @@
 enum DownloadStatus { queued, downloading, paused, error, done }
 
+enum DownloadType { http, torrent }
+
 class DownloadItem {
   final String id;
   final String url;
@@ -16,6 +18,15 @@ class DownloadItem {
   String? errorMessage;
   DateTime addedAt;
 
+  // Torrent-specific fields
+  final DownloadType downloadType;
+  final String? torrentHash;
+  final String? torrentMagnetLink;
+  String? torrentName;
+  int seeders;
+  int peers;
+  double uploadSpeedBytesPerSec;
+
   DownloadItem({
     required this.id,
     required this.url,
@@ -31,10 +42,19 @@ class DownloadItem {
     this.retryCount = 0,
     this.errorMessage,
     DateTime? addedAt,
+    this.downloadType = DownloadType.http,
+    this.torrentHash,
+    this.torrentMagnetLink,
+    this.torrentName,
+    this.seeders = 0,
+    this.peers = 0,
+    this.uploadSpeedBytesPerSec = 0,
   }) : addedAt = addedAt ?? DateTime.now();
 
   double get progress =>
       totalBytes > 0 ? (downloadedBytes / totalBytes).clamp(0.0, 1.0) : 0.0;
+
+  bool get isTorrent => downloadType == DownloadType.torrent;
 
   String get statusLabel {
     switch (status) {
@@ -59,6 +79,10 @@ class DownloadItem {
     int? etaSeconds,
     int? retryCount,
     String? errorMessage,
+    int? seeders,
+    int? peers,
+    double? uploadSpeedBytesPerSec,
+    String? torrentName,
   }) =>
       DownloadItem(
         id: id,
@@ -75,6 +99,13 @@ class DownloadItem {
         retryCount: retryCount ?? this.retryCount,
         errorMessage: errorMessage ?? this.errorMessage,
         addedAt: addedAt,
+        downloadType: downloadType,
+        torrentHash: torrentHash,
+        torrentMagnetLink: torrentMagnetLink,
+        torrentName: torrentName ?? this.torrentName,
+        seeders: seeders ?? this.seeders,
+        peers: peers ?? this.peers,
+        uploadSpeedBytesPerSec: uploadSpeedBytesPerSec ?? this.uploadSpeedBytesPerSec,
       );
 
   Map<String, dynamic> toJson() => {
@@ -90,6 +121,13 @@ class DownloadItem {
     'retryCount': retryCount,
     'errorMessage': errorMessage,
     'addedAt': addedAt.toIso8601String(),
+    'downloadType': downloadType.index,
+    'torrentHash': torrentHash,
+    'torrentMagnetLink': torrentMagnetLink,
+    'torrentName': torrentName,
+    'seeders': seeders,
+    'peers': peers,
+    'uploadSpeedBytesPerSec': uploadSpeedBytesPerSec,
   };
 
   factory DownloadItem.fromJson(Map<String, dynamic> json) {
@@ -106,6 +144,13 @@ class DownloadItem {
       retryCount: json['retryCount'] ?? 0,
       errorMessage: json['errorMessage'],
       addedAt: json['addedAt'] != null ? DateTime.parse(json['addedAt']) : null,
+      downloadType: json['downloadType'] != null ? DownloadType.values[json['downloadType']] : DownloadType.http,
+      torrentHash: json['torrentHash'],
+      torrentMagnetLink: json['torrentMagnetLink'],
+      torrentName: json['torrentName'],
+      seeders: json['seeders'] ?? 0,
+      peers: json['peers'] ?? 0,
+      uploadSpeedBytesPerSec: (json['uploadSpeedBytesPerSec'] ?? 0).toDouble(),
     );
   }
 }
